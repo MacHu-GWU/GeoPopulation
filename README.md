@@ -40,12 +40,13 @@
 >       找到多边形的质心。离质心最近的四个栅格的人口密度的均值作为多边形的人口密度
 
 ##项目文件
-dataset/32229polygons.json = **32229个多边形顶点数据**
-dataset/Mean_BG.txt = **220355个人口普查点数据**
-gridmap.db = **sqlite栅格信息数据库**
-main.py = **主python脚本**
-density.txt = **输出的人口密度信息**
+
+- dataset/32229polygons.json  **32229个多边形顶点数据**
+- dataset/Mean_BG.txt  **220355个人口普查点数据**
+- gridmap.db  **sqlite栅格信息数据库**
+- main.py  **主python脚本**
+- density.txt  **输出的人口密度信息**
 
 ##参考资料
-[多边形面积算法](http://en.wikipedia.org/wiki/Shoelace_formula)
-[点是否在多边形内](http://geospatialpython.com/2011/01/point-in-polygon.html)
+- [多边形面积算法](http://en.wikipedia.org/wiki/Shoelace_formula)
+- [点是否在多边形内](http://geospatialpython.com/2011/01/point-in-polygon.html)
