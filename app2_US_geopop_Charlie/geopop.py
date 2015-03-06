@@ -24,7 +24,7 @@ conn = sqlite3.connect("geopop.db")
 c = conn.cursor()
 
 ## 栅格常数设定，按照degree划分栅格
-la_resolution, lg_resolution = 0.25, 0.25
+la_resolution, lg_resolution = 0.05, 0.05
 la_min, la_max = 24.0, 50.0
 lg_min, lg_max = -124.0, -65.0
 
@@ -309,7 +309,7 @@ def fill_island():
     ### === 按照州的边界，只要在边界内部的，就算作大陆
     boundary = load_js(r"dataset\processed\US_state_boundary_sparse.json")
     for la, lg, population in c.execute("SELECT center_la, center_lg, population from gridmap").fetchall():
-            
+             
         flag = 0
         if population > 0: # 如果人口大于0，则直接判定是陆地
             flag = 1
@@ -319,7 +319,7 @@ def fill_island():
                 if is_in_state: # 只要在某个州里，就算是大陆
                     flag = 1
                     break
-           
+            
         if flag: # 如果是大陆
             c.execute("""UPDATE gridmap SET is_conus = 1 WHERE 
             center_la = '{0}' AND center_lg = '{1}';""".format(la, lg))
@@ -335,12 +335,13 @@ def fill_island():
     waters = df[df["e"] == 0][["c", "d"]]
       
     grid_radius = (la_resolution**2 + lg_resolution**2)**0.5 * 0.75 # *0.75 = 0.26516504294495535
-
+    grid_radius = 0.25
+    
     for la, lg in c.execute("SELECT center_la, center_lg from gridmap WHERE is_conus = 1 AND population = 0;").fetchall():
         test = np.array([[float(la), float(lg)]])
         
-        ct1 = waters["c"].map(lambda x: abs(x - float(la)) <= 1 ) # 经纬度差在一度以内
-        ct2 = waters["d"].map(lambda x: abs(x - float(lg)) <= 1 )
+        ct1 = waters["c"].map(lambda x: abs(x - float(la)) <= 0.25 ) # 经纬度差在一度以内
+        ct2 = waters["d"].map(lambda x: abs(x - float(lg)) <= 0.25 )
         near_waters = waters[ct1 & ct2].values # 只选择栅格点附近的水域点进行对比，节约计算时间
         try:
             nearest_water_distance = knn_find(near_waters, test, 1)[0][0][0]
@@ -350,7 +351,7 @@ def fill_island():
                 print("%s, %s is actually marines" % (la, lg))
         except:
             pass
-    conn.commit()
+        conn.commit()
     
 def plot_conus():
     c.execute("""SELECT center_la, center_lg from gridmap WHERE is_conus = 1;""")
@@ -408,11 +409,11 @@ if __name__ == "__main__":
 #     fill_population()
 #     fill_island()
 
-#     plot_conus()
+    plot_conus()
 #     plot_population()
 #     plot_population_contour()
 
-#     output_for_Charlie()
+    output_for_Charlie()
     
     
     pass

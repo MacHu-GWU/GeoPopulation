@@ -366,8 +366,8 @@ def fill_island():
                 print("\t", la, lg)
         except:
             pass
-        
-    conn.commit()
+        conn.commit()
+    
     
 def plot_conus():
     c.execute("""SELECT center_la, center_lg from gridmap WHERE is_conus = 1;""")
